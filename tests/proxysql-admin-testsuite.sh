@@ -137,3 +137,6 @@ sudo bats $SCRIPT_PWD/generic-test.bats
 echo "proxysql-admin testsuite bats test log"
 sudo bats $SCRIPT_PWD/proxysql-admin-testsuite.bats 
 
+${PXC_BASEDIR}/bin/mysqladmin  --socket=${PXC_BASEDIR}/node1/socket.sock  -u root shutdown
+${PXC_BASEDIR}/bin/mysqladmin  --socket=${PXC_BASEDIR}/node2/socket.sock  -u root shutdown
+${PXC_BASEDIR}/bin/mysqladmin  --socket=${PXC_BASEDIR}/node3/socket.sock  -u root shutdown
