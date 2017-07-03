@@ -15,7 +15,7 @@ SUSER=root
 SPASS=
 
 if [ -z $WORKDIR ];then
- WORKDIR="${PWD}"
+  WORKDIR="${PWD}"
 fi 
 ROOT_FS=$WORKDIR
 
@@ -24,16 +24,8 @@ mkdir -p $WORKDIR/logs
 killall -9 proxysql || true 2>/dev/null
 killall -9 mysqld || true 2>/dev/null
 
-#mv *.tar.gz ${WORKDIR}/ 2>/dev/null
-pushd $ROOT_FS
-if [ -d proxysql-admin-tool ]; then
-  cd proxysql-admin-tool
-  git pull
-else
-  git clone https://github.com/percona/proxysql-admin-tool -b v1.4.0-dev
-fi
-popd
-pushd ${WORKDIR}
+
+cd ${WORKDIR}
 
 #Check PXC binary tar ball
 PXC_TAR=$(ls -1td ?ercona-?tra??-?luster* | grep ".tar" | head -n1)
@@ -61,7 +53,7 @@ fi
 
 rm *.tar.gz
 $PROXYSQL_BASE/usr/bin/proxysql -D $PROXYSQL_BASE  $PROXYSQL_BASE/proxysql.log &
-popd
+
 
 if [ "$(${PXC_BASEDIR}/bin/mysqld --version | grep -oe '5\.[567]' | head -n1)" == "5.7" ]; then
   MID="${PXC_BASEDIR}/bin/mysqld --no-defaults --initialize-insecure --basedir=${PXC_BASEDIR}"
@@ -141,7 +133,7 @@ if [[ ! -e $(which bats 2> /dev/null) ]] ;then
 fi
 
 echo "proxysql-admin generic bats test log"
-sudo bats $ROOT_FS/proxysql-admin-tool/tests/generic-test.bats 
+sudo bats $SCRIPT_PWD/generic-test.bats 
 echo "proxysql-admin testsuite bats test log"
-sudo bats $ROOT_FS/proxysql-admin-tool/tests/proxysql-admin-testsuite.bats 
+sudo bats $SCRIPT_PWD/proxysql-admin-testsuite.bats 
 
