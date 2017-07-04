@@ -21,9 +21,8 @@ ROOT_FS=$WORKDIR
 
 mkdir -p $WORKDIR/logs
 
-killall -9 proxysql || true 2>/dev/null
-killall -9 mysqld || true 2>/dev/null
-
+ps -ef | egrep "mysqld" | grep "$(whoami)" | egrep -v "grep" | xargs kill -9 2>/dev/null
+ps -ef | egrep "proxysql" | grep "$(whoami)" | egrep -v "grep" | xargs kill -9 2>/dev/null
 
 cd ${WORKDIR}
 
@@ -133,9 +132,9 @@ if [[ ! -e $(which bats 2> /dev/null) ]] ;then
 fi
 
 echo "proxysql-admin generic bats test log"
-sudo bats $SCRIPT_PWD/generic-test.bats 
+sudo TERM=xtrem bats $SCRIPT_PWD/generic-test.bats 
 echo "proxysql-admin testsuite bats test log"
-sudo bats $SCRIPT_PWD/proxysql-admin-testsuite.bats 
+sudo TERM=xtrem bats $SCRIPT_PWD/proxysql-admin-testsuite.bats 
 
 ${PXC_BASEDIR}/bin/mysqladmin  --socket=${PXC_BASEDIR}/node1/socket.sock  -u root shutdown
 ${PXC_BASEDIR}/bin/mysqladmin  --socket=${PXC_BASEDIR}/node2/socket.sock  -u root shutdown
